@@ -1,0 +1,13 @@
+const tx2930 = await wallet.sendTransaction({
+...   to: wallet.address,
+...   value: parseEther("0.0001"),
+...   type: 1,
+...   accessList: [],
+...   gasLimit: 21000
+})
+
+await tx2930.wait()
+(await provider.getTransaction(tx2930.hash)).type   // expect 1
+
+node> await provider.send("eth_createAccessList", [{from: wallet.address, to: wallet.address, data:"0x"}])
+

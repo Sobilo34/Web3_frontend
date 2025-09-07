@@ -1,0 +1,37 @@
+node> const delegate = "0x4Cd241E8d1510e30b2076397afc7508Ae59C66c9"  // example impl (verify network!)
+node> const net = await provider.getNetwork()
+node> const auth = await wallet.signAuthorization({ chainId: net.chainId, address: delegate })
+node> const tx7702 = await wallet.sendTransaction({
+...   type: 4,
+...   authorizationList: [auth],
+...   to: wallet.address,
+...   data: "0x"
+... })
+node> await tx7702.wait()
+node> (await provider.getTransaction(tx7702.hash)).type   // expect 4
+
+
+
+const domain = {
+  name: "Ethereum Authorization",
+  version: "1",
+  chainId: net.chainId,
+  verifyingContract: delegate
+};
+
+const types = {
+  Authorization: [
+    { name: "authorizer", type: "address" },
+    { name: "delegate", type: "address" },
+    { name: "nonce", type: "uint256" },
+  ],
+};
+
+const value = {
+  authorizer: wallet.address,
+  delegate: delegate,
+  nonce: 0n
+};
+
+const sig = await wallet.signTypedData(domain, types, value);
+

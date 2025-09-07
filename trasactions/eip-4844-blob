@@ -1,0 +1,18 @@
+node> const { loadKZG } = await import('kzg-wasm')
+node> const kzg = await loadKZG()
+node> const blob = ethers.randomBytes(1024)  // ethers will pad & commit as needed
+node> const fees2 = await provider.getFeeData()
+node> const tx4844 = await wallet.sendTransaction({
+...   to: wallet.address,
+...   type: 3,
+...   blobs: [blob],
+...   kzg,
+...   // regular base/tip fees for execution gas:
+...   maxPriorityFeePerGas: fees2.maxPriorityFeePerGas,
+...   maxFeePerGas: fees2.maxFeePerGas,
+...   // blob gas cap (separate market):
+...   maxFeePerBlobGas: parseGwei("1")
+... })
+node> await tx4844.wait()
+node> (await provider.getTransaction(tx4844.hash)).type   // expect 3
+

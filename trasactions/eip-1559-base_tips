@@ -1,0 +1,17 @@
+node> const { ethers, JsonRpcProvider, Wallet, parseEther, parseGwei } = await import('ethers')
+node> const provider = new JsonRpcProvider('https://rpc.sepolia.org')
+node> const wallet = new Wallet(process.env.PRIVATE_KEY, provider)
+node> wallet.address
+
+
+node> const fees = await provider.getFeeData()
+node> const tx1559 = await wallet.sendTransaction({
+...   to: wallet.address,
+...   value: parseEther("0.0001"),
+...   type: 2,
+...   maxPriorityFeePerGas: fees.maxPriorityFeePerGas,
+...   maxFeePerGas: fees.maxFeePerGas
+... })
+node> await tx1559.wait()
+node> (await provider.getTransaction(tx1559.hash)).type   // expect 2
+
